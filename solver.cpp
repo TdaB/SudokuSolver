@@ -71,78 +71,26 @@ bool is_valid_move(int grid[N][N], int val, int row, int col) {
 	return !in_row(grid, val, row) && !in_col(grid, val, col) && !in_3x3(grid, val, row, col);
 }
 
-//bool check_9-OLD(vector<int> v) {
-//	vector<int> nums;
-//	for (int n = 1; n <= N; n++) {
-//		nums.push_back(n);
-//	}
-//	for (vector<int>::iterator it = v.begin(); it != v.end(); ++it) {
-//		cout << *it;
-//		for (vector<int>::iterator it_nums = nums.begin(); it_nums != nums.end(); ++it_nums) {
-//			cout << *it_nums;
-//			if (*it_nums == *it) {
-//				// Erase from nums
-//				nums.erase(remove(nums.begin(), nums.end(), *it), nums.end());
-//			}
-//		}
-//	}
-//	return nums.size() == 0;
-//}
+int * get_col(int grid[N][N], int col) {
+	int * c = new int[9];
+	for (int i = 0; i < N; i++) {
+		c[i] = grid[i][col];
+	}
+	return c;
+}
 
-//int * get_col(int grid[N][N], int col) {
-//	int c[9];
-//	for (int i = 0; i < N; i++) {
-//		c[i] = grid[i][col];
-//	}
-//	return c;
-//}
+int * get_3x3(int grid[N][N], int row, int col) {
+	int * vals = new int[N];
+	int index = 0;
 
-//int * get_3x3(int grid[N][N], int row, int col) {
-//	int row_start, col_start;
-//	int vals[N];
-//	int index = 0;
-//
-//	if (row >= 0 && row <= 2) {
-//		row_start = 0;
-//	}
-//	if (row >= 3 && row <= 5) {
-//		row_start = 3;
-//	}
-//	if (row >= 6 && row <= 8) {
-//		row_start = 6;
-//	}
-//
-//	if (col >= 0 && col <= 2) {
-//		col_start = 0;
-//	}
-//	if (col >= 3 && col <= 5) {
-//		col_start = 3;
-//	}
-//	if (col >= 6 && col <= 8) {
-//		col_start = 6;
-//	}
-//
-//	for (int r = row_start; r < row_start + 3; r++) {
-//		for (int c = col_start; c < col_start + 3; c++) {
-//			vals[index] = grid[r][c];
-//			index++;
-//		}
-//	}
-//	return vals;
-//}
-
-//int * get_3x3(int grid[N][N], int row, int col) {
-//	int vals[N];
-//	int index = 0;
-//
-//	for (int r = row; r < row + 3; r++) {
-//		for (int c = col; c < col + 3; c++) {
-//			vals[index] = grid[r][c];
-//			index++;
-//		}
-//	}
-//	return vals;
-//}
+	for (int r = row; r < row + 3; r++) {
+		for (int c = col; c < col + 3; c++) {
+			vals[index] = grid[r][c];
+			index++;
+		}
+	}
+	return vals;
+}
 
 // Check to see if we have numbers 1 - 9
 // in a row, col, or 3x3 slice
@@ -171,7 +119,6 @@ bool check_9(int slice[9]) {
 	return true;
 }
 
-
 bool is_solved(int grid[N][N]) {
 	// Check rows
 	for (int r = 0; r < N; r++) {
@@ -182,11 +129,7 @@ bool is_solved(int grid[N][N]) {
 
 	// Check cols
 	for (int c = 0; c < N; c++) {
-		//int * col = get_col(grid, c);
-		int col[9];
-		for (int i = 0; i < N; i++) {
-			col[i] = grid[i][c];
-		}
+		int * col = get_col(grid, c);
 		if (!check_9(col)) {
 			return false;
 		}
@@ -195,19 +138,8 @@ bool is_solved(int grid[N][N]) {
 	// Check 3x3s
 	for (int r = 0; r < N; r = r + 3) {
 		for (int c = 0; c < N; c = c + 3) {
-			//int * my_3x3 = get_3x3(grid, r, c);
-
-			int vals[N];
-			int index = 0;
-
-			for (int rr = r; rr < r + 3; rr++) {
-				for (int cc = c; cc < c + 3; cc++) {
-					vals[index] = grid[rr][cc];
-					index++;
-				}
-			}
-
-			if (!check_9(vals)) {
+			int * my_3x3 = get_3x3(grid, r, c);
+			if (!check_9(my_3x3)) {
 				return false;
 			}
 		}
@@ -217,9 +149,7 @@ bool is_solved(int grid[N][N]) {
 }
 
 bool solve(int grid[N][N]) {
-//this_thread::sleep_for(chrono::milliseconds(500));
-//print_grid(grid);
-//cout << endl;
+//this_thread::sleep_for(chrono::milliseconds(100));
 
 	if (is_solved(grid)) {
 		cout << "SOLVED!" << endl;
@@ -284,6 +214,6 @@ int main() {
 	};
 
 	cout << solve(grid);
-	
+
 	return 0;
 }
